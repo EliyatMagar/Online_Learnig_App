@@ -1,0 +1,764 @@
+🔹 1. Major Features of EduMaster
+
+EduMaster will support three main roles: Students, Instructors, and Admins.
+
+a) Authentication & Authorization
+
+User Registration & Login (JWT / OAuth2 if needed)
+
+Roles: Student, Instructor, Admin
+
+Profile management (name, email, bio, profile picture)
+
+b) Course Management
+
+Instructors can create/update/delete courses
+
+Students can enroll in courses
+
+Courses include syllabus, materials, and videos
+
+c) Exam & Quiz Management
+
+MCQs, True/False, Short Answer, Coding Questions
+
+Scheduled exams & instant quizzes
+
+Automatic evaluation (for objective Qs)
+
+Manual grading (for subjective Qs)
+
+d) Exam Notes & Study Materials
+
+Upload notes (PDF, docs, videos)
+
+Categorized by course and topic
+
+Students can download/view
+
+e) Results & Analytics
+
+Student scores & progress tracking
+
+Instructor dashboards (performance of students)
+
+Admin analytics (most popular courses, active students)
+
+f) Admin Features
+
+Manage all users, courses, and exams
+
+Generate reports
+
+System monitoring
+
+🔹 2. Entities and Their Relations
+
+Now, let’s design the ER model (Entities + Relationships).
+
+Entities
+
+User
+
+user_id (PK)
+
+name
+
+email
+
+password
+
+role (Student/Instructor/Admin)
+
+profile_info
+
+Course
+
+course_id (PK)
+
+title
+
+description
+
+instructor_id (FK → User)
+
+created_at
+
+Enrollment
+
+enroll_id (PK)
+
+student_id (FK → User)
+
+course_id (FK → Course)
+
+enroll_date
+
+Exam
+
+exam_id (PK)
+
+title
+
+course_id (FK → Course)
+
+created_by (FK → User)
+
+exam_type (quiz/midterm/final)
+
+scheduled_date
+
+Question
+
+question_id (PK)
+
+exam_id (FK → Exam)
+
+question_text
+
+question_type (MCQ, True/False, Short Answer, Coding)
+
+marks
+
+Option
+
+option_id (PK)
+
+question_id (FK → Question)
+
+option_text
+
+is_correct (boolean)
+
+Answer
+
+answer_id (PK)
+
+question_id (FK → Question)
+
+student_id (FK → User)
+
+selected_option (FK → Option, nullable)
+
+answer_text (for subjective)
+
+marks_obtained
+
+Result
+
+result_id (PK)
+
+exam_id (FK → Exam)
+
+student_id (FK → User)
+
+total_marks
+
+obtained_marks
+
+grade
+
+Notes
+
+note_id (PK)
+
+course_id (FK → Course)
+
+uploaded_by (FK → User)
+
+title
+
+file_url
+
+created_at
+
+Entity Relationships
+
+User → Course: One Instructor teaches many courses (1:N)
+
+User → Enrollment → Course: Students enroll in many courses (M:N)
+
+Course → Exam: A course has many exams (1:N)
+
+Exam → Question: An exam has many questions (1:N)
+
+Question → Option: A question has many options (1:N)
+
+Question → Answer: A student answers a question (M:N)
+
+Exam → Result: Each student has one result per exam (1:N)
+
+Course → Notes: A course has multiple notes/resources (1:N)
+
+📌 This structure supports scalability (e.g., adding live classes, discussion forums later).
+
+🔹 3. Project Documentation Structure
+
+When documenting EduMaster, follow a Software Project Documentation (SPD) template:
+
+EduMaster Documentation/
+│── 1. Introduction
+│   ├── Project Overview
+│   ├── Objectives
+│   ├── Scope
+│   └── Stakeholders
+│
+│── 2. System Analysis
+│   ├── Existing Problems in Learning Platforms
+│   ├── Proposed Solution (EduMaster)
+│   ├── Functional Requirements
+│   └── Non-Functional Requirements
+│
+│── 3. System Design
+│   ├── Use Case Diagrams
+│   ├── ER Diagram (Entities & Relations)
+│   ├── DFDs (Context Level, Level 1, Level 2)
+│   ├── Sequence Diagrams (Exam, Quiz, Enrollment)
+│   └── Architecture (MERN or Spring Boot + React)
+│
+│── 4. Database Design
+│   ├── ERD
+│   ├── Relational Schema
+│   └── Sample SQL Scripts
+│
+│── 5. Project Structure
+│   ├── Backend Structure (controllers, services, models, routes)
+│   ├── Frontend Structure (components, pages, redux)
+│   └── Deployment Pipeline
+│
+│── 6. Implementation
+│   ├── Tech Stack (MERN or Spring Boot + React + PostgreSQL)
+│   ├── API Documentation (Swagger / Postman)
+│   └── Security (JWT, Role-based access, CSRF protection)
+│
+│── 7. Testing
+│   ├── Unit Testing
+│   ├── Integration Testing
+│   ├── End-to-End Testing
+│   └── Test Cases
+│
+│── 8. Deployment & Maintenance
+│   ├── Hosting (Heroku, Vercel, AWS, Railway)
+│   ├── CI/CD Pipeline
+│   └── Maintenance Plan
+│
+│── 9. Appendices
+│   ├── Glossary
+│   └── References
+
+
+✅ With this, you have:
+
+Features (auth, courses, exams, notes, results)
+
+Entities + Relationships (ERD design)
+
+Documentation structure for your project
+EduMaster/
+│── src/
+│   ├── main/
+│   │   ├── java/com/edumaster/
+│   │   │   ├── config/              # Security, JWT, CORS, DB configs
+│   │   │   ├── controller/          # REST Controllers
+│   │   │   │   ├── AuthController.java
+│   │   │   │   ├── UserController.java
+│   │   │   │   ├── CourseController.java
+│   │   │   │   ├── ExamController.java
+│   │   │   │   ├── QuestionController.java
+│   │   │   │   ├── ResultController.java
+│   │   │   │   └── NotesController.java
+│   │   │   ├── dto/                 # DTOs for requests/responses
+│   │   │   ├── exception/           # Custom exceptions & handlers
+│   │   │   ├── model/               # Entities
+│   │   │   │   ├── User.java
+│   │   │   │   ├── Role.java
+│   │   │   │   ├── Course.java
+│   │   │   │   ├── Enrollment.java
+│   │   │   │   ├── Exam.java
+│   │   │   │   ├── Question.java
+│   │   │   │   ├── Option.java
+│   │   │   │   ├── Answer.java
+│   │   │   │   ├── Result.java
+│   │   │   │   └── Notes.java
+│   │   │   ├── repository/          # Spring Data JPA repositories
+│   │   │   │   ├── UserRepository.java
+│   │   │   │   ├── CourseRepository.java
+│   │   │   │   ├── ExamRepository.java
+│   │   │   │   ├── QuestionRepository.java
+│   │   │   │   ├── ResultRepository.java
+│   │   │   │   └── NotesRepository.java
+│   │   │   ├── security/            # JWT, filters, auth provider
+│   │   │   ├── service/             # Business logic
+│   │   │   │   ├── AuthService.java
+│   │   │   │   ├── UserService.java
+│   │   │   │   ├── CourseService.java
+│   │   │   │   ├── ExamService.java
+│   │   │   │   ├── QuestionService.java
+│   │   │   │   ├── ResultService.java
+│   │   │   │   └── NotesService.java
+│   │   │   └── EduMasterApplication.java   # Main Spring Boot app
+│   │   └── resources/
+│   │       ├── static/              # Static files (if needed)
+│   │       ├── templates/           # Thymeleaf templates (if used)
+│   │       ├── application.yml      # Application config
+│   │       └── schema.sql           # Optional initial DB schema
+│   └── test/java/com/edumaster/     # Unit + integration tests
+│
+├── pom.xml                          # Maven dependencies
+└── README.md
+
+
+🔹 Layer Responsibilities
+
+config/ → DB config, security config, CORS, Swagger setup
+
+controller/ → Exposes REST APIs (thin layer, calls services)
+
+dto/ → Request/response payloads (avoid exposing entity directly)
+
+exception/ → Centralized error handling
+
+model/ → JPA Entities (User, Course, Exam, etc.)
+
+repository/ → Interfaces extending JpaRepository
+
+security/ → JWT, authentication filters, role-based access
+
+service/ → Core business logic
+
+resources/ → Config (application.yml), SQL scripts, static files
+
+🔹 Example Flow
+
+Student Login → AuthController → AuthService → UserRepository → JWT issued
+
+Instructor Creates Exam → ExamController → ExamService → ExamRepository
+
+Student Submits Answer → QuestionController → ResultService → ResultRepository
+Download Notes → NotesController → NotesService → NotesRepository
+
+Perfect 👌 Let’s create the model/entity files for EduMaster backend in Spring Boot (monolithic version) using JPA + PostgreSQL.
+
+I’ll cover all the core entities we discussed:
+
+User
+
+Role
+
+Course
+
+Enrollment
+
+Exam
+
+Question
+
+Option
+
+Answer
+
+Result
+
+Notes
+
+📂 model Package
+1️⃣ User.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+
+    private String name;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role; // STUDENT, INSTRUCTOR, ADMIN
+
+    // Relations
+    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL)
+    private Set<Course> courses = new HashSet<>();
+}
+
+2️⃣ Role.java
+package com.edumaster.model;
+
+public enum Role {
+    STUDENT,
+    INSTRUCTOR,
+    ADMIN
+}
+
+3️⃣ Course.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "courses")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Course {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long courseId;
+
+    private String title;
+
+    @Column(length = 1000)
+    private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private User instructor;
+
+    // Relations
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<Enrollment> enrollments = new HashSet<>();
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<Exam> exams = new HashSet<>();
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<Notes> notes = new HashSet<>();
+}
+
+4️⃣ Enrollment.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "enrollments")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Enrollment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long enrollId;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private User student;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    private String enrollDate;
+}
+
+5️⃣ Exam.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "exams")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Exam {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long examId;
+
+    private String title;
+
+    @Enumerated(EnumType.STRING)
+    private ExamType examType; // QUIZ, MIDTERM, FINAL
+
+    private LocalDateTime scheduledDate;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
+    private Set<Question> questions = new HashSet<>();
+}
+
+6️⃣ ExamType.java
+package com.edumaster.model;
+
+public enum ExamType {
+    QUIZ,
+    MIDTERM,
+    FINAL
+}
+
+7️⃣ Question.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "questions")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long questionId;
+
+    @Column(length = 2000)
+    private String questionText;
+
+    @Enumerated(EnumType.STRING)
+    private QuestionType questionType; // MCQ, TRUE_FALSE, SHORT_ANSWER, CODING
+
+    private int marks;
+
+    @ManyToOne
+    @JoinColumn(name = "exam_id")
+    private Exam exam;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private Set<Option> options = new HashSet<>();
+}
+
+8️⃣ QuestionType.java
+package com.edumaster.model;
+
+public enum QuestionType {
+    MCQ,
+    TRUE_FALSE,
+    SHORT_ANSWER,
+    CODING
+}
+
+9️⃣ Option.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "options")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Option {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long optionId;
+
+    private String optionText;
+
+    private boolean isCorrect;
+
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private Question question;
+}
+
+🔟 Answer.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "answers")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Answer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long answerId;
+
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private Question question;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private User student;
+
+    private String answerText; // For subjective answers
+
+    @ManyToOne
+    @JoinColumn(name = "selected_option")
+    private Option selectedOption; // For MCQ answers
+
+    private int marksObtained;
+}
+
+1️⃣1️⃣ Result.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "results")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Result {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long resultId;
+
+    @ManyToOne
+    @JoinColumn(name = "exam_id")
+    private Exam exam;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private User student;
+
+    private int totalMarks;
+
+    private int obtainedMarks;
+
+    private String grade;
+}
+
+1️⃣2️⃣ Notes.java
+package com.edumaster.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "notes")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Notes {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long noteId;
+
+    private String title;
+
+    private String fileUrl; // PDF, DOCX, etc.
+
+    private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "uploaded_by")
+    private User uploadedBy;
+}
+
+
+✅ Now you have all entity classes with relationships:
+
+User ↔ Course ↔ Exam ↔ Question ↔ Option ↔ Answer ↔ Result
+
+User ↔ Course ↔ Notes
+
+User ↔ Course via Enrollment
+
+👉 Do you want me to also generate the ER diagram (visual) from these models so you can quickly verify the relationships before moving to repositories & services?
+
+
+f course. Based on the provided project document, here is a detailed breakdown of the three user roles (Student, Instructor, Admin), their assigned functions, and how these functions map to your system's features and entities.
+
+Role-Based Access Control (RBAC) Summary
+Role	Primary Function	Key Permissions
+Student	To learn and be assessed.	Enroll in courses, take exams, view materials, track progress.
+Instructor	To create educational content and evaluate students.	Create/manage courses & exams, grade submissions, view analytics.
+Admin	To oversee and maintain the platform.	Manage all users and content, generate system-wide reports, monitor health.
+1. Student
+A Student is the primary consumer of the educational content. Their journey involves enrolling in courses, accessing materials, and completing assessments.
+
+Functions & Features:
+
+Function	Description	Related Entity/Feature
+Browse & Enroll in Courses	View available courses and enroll in them.	Course, Enrollment
+Access Study Materials	View and download notes, PDFs, and videos uploaded by the instructor.	Notes
+Take Exams/Quizzes	Participate in scheduled exams or instant quizzes. The system automatically evaluates objective questions (MCQ, True/False).	Exam, Question, Option, Answer
+View Results & Progress	See their grades, marks per exam, and overall progress in a course.	Result
+Manage Profile	Update their personal information, such as name, email, and profile picture.	User (own profile)
+2. Instructor
+An Instructor is a content creator and evaluator. They are responsible for building courses, assessing student performance, and providing resources.
+
+Functions & Features:
+
+Function	Description	Related Entity/Feature
+Create & Manage Courses	Create new courses, define the syllabus, and update course information.	Course
+Upload Study Materials	Add notes, documents, and video resources for their courses.	Notes
+Create & Schedule Exams	Build exams by adding questions (MCQ, True/False, Short Answer, Coding). Set schedules and time limits.	Exam, Question, Option
+Grade Subjective Answers	Manually grade questions that cannot be auto-evaluated (e.g., Short Answer, Coding questions).	Answer, Result
+View Analytics & Dashboards	Access dashboards to track the performance of all students enrolled in their courses. Identify difficult questions.	Result (Analytics)
+Manage Profile	Update their own professional profile, including a bio and profile picture.	User (own profile)
+Important Note: An Instructor cannot directly create users or access admin-level analytics. Their permissions are scoped to the courses they own.
+
+3. Admin
+An Admin is a superuser responsible for the health, security, and integrity of the entire platform. They have read/write access to almost all data.
+
+Functions & Features:
+
+Function	Description	Related Entity/Feature
+User Management	Create, view, update, deactivate, or delete any user (Student, Instructor, or other Admins). Can assign and change user roles.	User
+Course & Content Oversight	View, edit, or delete any course on the platform. This is a supervisory function to ensure content quality and policy adherence.	Course, Notes
+Exam Oversight	View, edit, or delete any exam. Can review questions and answers across the platform.	Exam, Question
+Generate System Reports	Create reports on platform activity (e.g., "Most Popular Courses," "Least Active Students," "Revenue Reports" if monetized).	Analytics
+System Monitoring	Monitor platform health, user login activity, and server performance.	System Monitoring
+Access Global Analytics	View dashboards that show site-wide metrics, not just per-course.	Analytics
+How This Maps to Your Code (Authorization):
+In your Spring Boot code, you will enforce these rules primarily in the Service Layer and Security Layer.
+
+Service Layer Checks: For actions like "delete a course," the CourseService.deleteCourse() method must check if the current user is the course owner (Instructor) OR an Admin.
+
+Security Layer Checks (@PreAuthorize): You can use Spring Security annotations on your controller methods to restrict access based on roles.
+
+Example in CourseController:
+
+java
+// Only an INSTRUCTOR (who owns the course) or an ADMIN can delete a course
+@DeleteMapping("/{courseId}")
+@PreAuthorize("hasRole('ADMIN') or @courseService.isCourseInstructor(authentication.principal.userId, #courseId)")
+public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) {
+    courseService.deleteCourse(courseId);
+    return ResponseEntity.ok().build();
+}
+Example in UserController:
+
+java
+// Only an ADMIN can get a list of all users
+@GetMapping
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<List<UserDto>> getAllUsers() {
+    return ResponseEntity.ok(userService.getAllUsers());
+}
+This RBAC structure ensures a secure and well-organized application where users can only perform actions appropriate to their role.
+
+
